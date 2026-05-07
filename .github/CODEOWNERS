@@ -1,0 +1,75 @@
+# =============================================================================
+# CODEOWNERS - Incident Center AI
+# =============================================================================
+#
+# Estratégia de ownership por contexto/domínio.
+# Cada linha define: <patterns> <owner(s)>
+#
+# Regras:
+# - Padrões são avaliados em ordem (primeiro match wins)
+# - Use @username para individuals, @team para teams
+# - Use * para match qualquer arquivo
+# - Use /** para match recursivo em directories
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# FRONTEND - UI, Components, Pages, Styles
+# ---------------------------------------------------------------------------
+demo-app/frontend/src/app/                @frontend-agent
+demo-app/frontend/src/components/         @frontend-agent
+demo-app/frontend/src/hooks/              @frontend-agent
+demo-app/frontend/src/lib/                @frontend-agent
+demo-app/frontend/src/types/              @frontend-agent
+demo-app/frontend/tailwind.config.ts      @frontend-agent
+demo-app/frontend/next.config.ts          @frontend-agent
+demo-app/frontend/tsconfig.json           @frontend-agent
+
+# ---------------------------------------------------------------------------
+# BACKEND - API, Services, Routes, Database
+# ---------------------------------------------------------------------------
+demo-app/backend/src/routes/              @backend-agent
+demo-app/backend/src/services/            @backend-agent
+demo-app/backend/src/middleware/          @backend-agent
+demo-app/backend/prisma/                  @backend-agent
+demo-app/backend/src/utils/db.ts          @backend-agent
+demo-app/backend/src/index.ts             @backend-agent
+demo-app/backend/package.json             @backend-agent
+demo-app/backend/tsconfig.json            @backend-agent
+
+# ---------------------------------------------------------------------------
+# AGENTS - Agent Logic, Simulation, Orchestration
+# ---------------------------------------------------------------------------
+demo-app/backend/src/agents/              @agent-orchestrator
+demo-app/backend/src/services/simulator-service.ts  @agent-orchestrator
+demo-app/backend/src/routes/simulator.ts  @agent-orchestrator
+demo-app/backend/src/utils/mock-data.ts   @agent-orchestrator
+demo-app/backend/src/utils/queue.ts       @agent-orchestrator
+
+# ---------------------------------------------------------------------------
+# OBSERVABILITY - Metrics, Logging, Tracing, Dashboards
+# ---------------------------------------------------------------------------
+observability/                            @observability-agent
+demo-app/backend/src/utils/otel.ts        @observability-agent
+
+# ---------------------------------------------------------------------------
+# INFRA - Docker, CI/CD, Environment Config
+# ---------------------------------------------------------------------------
+docker-compose.yml                        @devops-agent
+.github/                                  @devops-agent
+.env.example                              @devops-agent
+
+# ---------------------------------------------------------------------------
+# DOCS - All Documentation
+# ---------------------------------------------------------------------------
+docs/                                     @architect
+
+# ---------------------------------------------------------------------------
+# ROOT - Project-level Config
+# ---------------------------------------------------------------------------
+README.md                                 @architect
+*.md                                      @architect
+
+# ---------------------------------------------------------------------------
+# DEFAULT - Catch-all for unmatched files
+# ---------------------------------------------------------------------------
+*                                         @architect @backend-agent
