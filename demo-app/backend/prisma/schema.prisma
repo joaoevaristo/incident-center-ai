@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum IncidentSeverity {
+  critical
+  high
+  medium
+  low
+}
+
+enum IncidentStatus {
+  detected
+  triaging
+  investigating
+  mitigating
+  resolved
+  closed
+}
+
+enum AgentName {
+  triage
+  rca
+  mitigation
+  communication
+  sre
+}
+
+enum TaskStatus {
+  pending
+  running
+  completed
+  failed
+}
+
+enum Channel {
+  slack
+  email
+  webhook
+}
+
+enum MetricType {
+  gauge
+  counter
+  histogram
+}
+
+model Incident {
+  id          String       @id @default(cuid()) @map("id")
+  title       String       @map("title")
+  description String?      @map("description")
+  severity    IncidentSeverity @default(medium) @map("severity")
+  status      IncidentStatus   @default(detected) @map("status")
+  source      String       @default("simulated") @map("source")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
+  resolvedAt  DateTime?    @map("resolved_at")
+  closedAt    DateTime?    @map("closed_at")
+
+  tasks       AgentTask[]
+  messages    AgentMessage[]
+  metrics     MetricSnapshot[]
+
+  @@map("incidents")
+}
+
+model AgentTask {
+  id           String         @id @default(cuid()) @map("id")
+  incidentId   String         @map("incident_id")
+  agentName    AgentName      @map("agent_name")
+  status       TaskStatus     @default(pending) @map("status")
+  inputData    Json?          @map("input_data")
+  outputData   Json?          @map("output_data")
+  startedAt    DateTime?      @map("started_at")
+  completedAt  DateTime?      @map("completed_at")
+  errorMessage String?        @map("error_message")
+
+  incident     Incident       @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
+  @@map("agent_tasks")
+}
+
+model AgentMessage {
+  id         String    @id @default(cuid()) @map("id")
+  incidentId String    @map("incident_id")
+  agentName  AgentName @map("agent_name")
+  channel    Channel   @default(slack) @map("channel")
+  content    String    @map("content")
+  sentAt     DateTime  @default(now()) @map("sent_at")
+
+  incident   Incident  @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
+  @@map("agent_messages")
+}
+
+model MetricSnapshot {
+  id          String       @id @default(cuid()) @map("id")
+  incidentId  String?      @map("incident_id")
+  metricName  String       @map("metric_name")
+  metricValue Float        @map("metric_value")
+  metricType  MetricType   @default(gauge) @map("metric_type")
+  labels      Json         @default("{}") @map("labels")
+  recordedAt  DateTime     @default(now()) @map("recorded_at")
+
+  incident    Incident?    @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+
+  @@index([incidentId])
+  @@map("metrics_snapshots")
+}
+
+model Setting {
+  key        String   @id @map("key")
+  value      Json     @map("value")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("settings")
+}

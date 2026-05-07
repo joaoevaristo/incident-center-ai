@@ -1,0 +1,15 @@
+# Prometheus data
+prometheus-data:
+  driver: local
+
+# Grafana data
+grafana-data:
+  driver: local
+
+# PostgreSQL data
+postgres-data:
+  driver: local
+
+# Redis data
+redis-data:
+  driver: local
